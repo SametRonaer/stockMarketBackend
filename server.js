@@ -3,6 +3,7 @@ var { YFinanceLive } = require('yfinance-live')
 const express = require("express");
 var http = require("http");
 const { emit } = require('process');
+const { getSymbolHistoricalData, getSymbolQuotes, searchTopic } = require('./services/yahoo_finance/yahoo_finance_service');
 const app = express();
 const port = process.env.PORT || 3000;
 var server = http.createServer(app);
@@ -22,7 +23,7 @@ io.on("connection", (socket) => {
     console.log('user disconnected');
   });
 
-  new YFinanceLive(['AAPL'], (data) => {
+  new YFinanceLive(['AAPL', 'BTC'], (data) => {
      socket.emit("StockChange", data);
      console.log(data);
    });
@@ -41,6 +42,8 @@ io.on("connection", (socket) => {
     });
 });
 
+//searchTopic("Nasdaq");
+getSymbolHistoricalData('AAPL');
 
 server.listen(port, () => {
   console.log("server started");
